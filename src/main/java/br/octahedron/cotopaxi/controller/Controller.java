@@ -23,12 +23,14 @@ import static br.octahedron.cotopaxi.CotopaxiProperty.NOT_FOUND_TEMPLATE;
 import static br.octahedron.cotopaxi.CotopaxiProperty.getProperty;
 import static br.octahedron.cotopaxi.controller.ControllerContext.getContext;
 
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import br.octahedron.cotopaxi.view.render.VelocityTemplateRender;
 import br.octahedron.cotopaxi.view.response.JSONResponse;
 import br.octahedron.cotopaxi.view.response.RedirectResponse;
 import br.octahedron.cotopaxi.view.response.SimpleTextResponse;
@@ -379,5 +381,12 @@ public abstract class Controller extends InputController {
 		ControllerDescriptor desc = new ControllerDescriptor(cont.getUrl(), this.controllerDescriptor().getHttpMethod(), actionName,
 				controller.getName());
 		getContext().forward(desc);
+	}
+
+	public String renderToMemory(String templatePath) {
+		VelocityTemplateRender template = new VelocityTemplateRender();
+		StringWriter writer = new StringWriter();
+		template.render(templatePath, output(), writer);
+		return writer.getBuffer().toString();
 	}
 }
